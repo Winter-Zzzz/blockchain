@@ -2,7 +2,10 @@
 
 ## Structure
 
-TBD ...
+Add image later.
+![alt](https://)
+
+The system consists of 4 Orderer nodes, 2 Peer nodes, and 2 user nodes. The user nodes can be implemented either as middleware servers or end systems.
 
 ## Build Network
 
