@@ -109,42 +109,42 @@ func (s *SmartContract) Register(ctx contractapi.TransactionContextInterface, aP
 	}
 
 	// Add to pkList if not exists
-    pkListKey := "pkList"
-    pkListBytes, err := ctx.GetStub().GetState(pkListKey)
-    if err != nil {
-        return fmt.Errorf("failed to read pkList: %v", err)
-    }
+	pkListKey := "pkList"
+	pkListBytes, err := ctx.GetStub().GetState(pkListKey)
+	if err != nil {
+		return fmt.Errorf("failed to read pkList: %v", err)
+	}
 
-    var pkList []string
-    if pkListBytes != nil {
-        err = json.Unmarshal(pkListBytes, &pkList)
-        if err != nil {
-            return fmt.Errorf("failed to unmarshal pkList: %v", err)
-        }
-    }
+	var pkList []string
+	if pkListBytes != nil {
+		err = json.Unmarshal(pkListBytes, &pkList)
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal pkList: %v", err)
+		}
+	}
 
-    // Check if aPK exists in pkList
-    pkExists := false
-    for _, pk := range pkList {
-        if pk == aPK {
-            pkExists = true
-            break
-        }
-    }
+	// Check if aPK exists in pkList
+	pkExists := false
+	for _, pk := range pkList {
+		if pk == aPK {
+			pkExists = true
+			break
+		}
+	}
 
-    // Add aPK if it doesn't exist
-    if !pkExists {
-        pkList = append(pkList, aPK)
-        pkListBytes, err = json.Marshal(pkList)
-        if err != nil {
-            return fmt.Errorf("failed to marshal pkList: %v", err)
-        }
+	// Add aPK if it doesn't exist
+	if !pkExists {
+		pkList = append(pkList, aPK)
+		pkListBytes, err = json.Marshal(pkList)
+		if err != nil {
+			return fmt.Errorf("failed to marshal pkList: %v", err)
+		}
 
-        err = ctx.GetStub().PutState(pkListKey, pkListBytes)
-        if err != nil {
-            return fmt.Errorf("failed to store pkList: %v", err)
-        }
-    }
+		err = ctx.GetStub().PutState(pkListKey, pkListBytes)
+		if err != nil {
+			return fmt.Errorf("failed to store pkList: %v", err)
+		}
+	}
 
 	return nil
 }
@@ -344,56 +344,56 @@ func (s *SmartContract) GetCurrentTransaction(ctx contractapi.TransactionContext
 
 // AllTransactions represents the structure for returning all transactions
 type AllTransactions struct {
-    PK           string   `json:"pk"`
-    Transactions []string `json:"transactions"`
+	PK           string   `json:"pk"`
+	Transactions []string `json:"transactions"`
 }
 
 // GetAllTransactions returns all transactions for all public keys
 func (s *SmartContract) GetAllTransactions(ctx contractapi.TransactionContextInterface) ([]AllTransactions, error) {
-    // Get pkList
-    pkListKey := "pkList"
-    pkListBytes, err := ctx.GetStub().GetState(pkListKey)
-    if err != nil {
-        return nil, fmt.Errorf("failed to read pkList: %v", err)
-    }
+	// Get pkList
+	pkListKey := "pkList"
+	pkListBytes, err := ctx.GetStub().GetState(pkListKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read pkList: %v", err)
+	}
 
-    if pkListBytes == nil {
-        return []AllTransactions{}, nil
-    }
+	if pkListBytes == nil {
+		return []AllTransactions{}, nil
+	}
 
-    var pkList []string
-    err = json.Unmarshal(pkListBytes, &pkList)
-    if err != nil {
-        return nil, fmt.Errorf("failed to unmarshal pkList: %v", err)
-    }
+	var pkList []string
+	err = json.Unmarshal(pkListBytes, &pkList)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal pkList: %v", err)
+	}
 
-    // Get transactions for each PK
-    var allTxs []AllTransactions
-    for _, pk := range pkList {
-        currentIndex, err := s.getCurrentIndex(ctx, pk)
-        if err != nil {
-            return nil, fmt.Errorf("failed to get current index for %s: %v", pk, err)
-        }
+	// Get transactions for each PK
+	var allTxs []AllTransactions
+	for _, pk := range pkList {
+		currentIndex, err := s.getCurrentIndex(ctx, pk)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get current index for %s: %v", pk, err)
+		}
 
-        var transactions []string
-        // Collect all transactions for this PK
-        for i := uint64(1); i <= currentIndex; i++ {
-            tx, err := s.GetTransaction(ctx, pk, i)
-            if err != nil {
-                continue // Skip if transaction not found
-            }
-            transactions = append(transactions, tx)
-        }
+		var transactions []string
+		// Collect all transactions for this PK
+		for i := uint64(1); i <= currentIndex; i++ {
+			tx, err := s.GetTransaction(ctx, pk, i)
+			if err != nil {
+				continue // Skip if transaction not found
+			}
+			transactions = append(transactions, tx)
+		}
 
-        if len(transactions) > 0 {
-            allTxs = append(allTxs, AllTransactions{
-                PK:           pk,
-                Transactions: transactions,
-            })
-        }
-    }
+		if len(transactions) > 0 {
+			allTxs = append(allTxs, AllTransactions{
+				PK:           pk,
+				Transactions: transactions,
+			})
+		}
+	}
 
-    return allTxs, nil
+	return allTxs, nil
 }
 
 func main() {
