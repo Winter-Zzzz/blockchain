@@ -27,3 +27,11 @@ You can use the following code to delete docker containers:
 ```
 ./network.sh down
 ```
+
+easy start with dummy data:
+
+```
+cd fabric-network
+chmod 777 ./easy_start.sh
+./easy_start.sh
+```
