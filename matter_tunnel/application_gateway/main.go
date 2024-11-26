@@ -14,6 +14,7 @@ import (
 	"github.com/hyperledger/fabric-gateway/pkg/client"
 	"github.com/hyperledger/fabric-gateway/pkg/identity"
 	"github.com/hyperledger/fabric-protos-go-apiv2/gateway"
+	"github.com/rs/cors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/status"
@@ -85,6 +86,9 @@ func main() {
 
 	// Router 설정
 	r := mux.NewRouter()
+
+	r.Use(corsMiddleware)
+
 	r.HandleFunc("/register", server.handleRegister).Methods("POST")
 	r.HandleFunc("/queuing", server.handleQueuing).Methods("POST")
 	r.HandleFunc("/getRegisteredPKs/{publicKey}", server.handleGetRegisteredPKs).Methods("GET")
@@ -92,9 +96,37 @@ func main() {
 	r.HandleFunc("/getTransaction", server.handleGetTransaction).Methods("GET")
 	r.HandleFunc("/getCurrentTransaction/{publicKey}", server.handleGetCurrentTransaction).Methods("GET")
 
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"}, // 모든 origin 허용. 프로덕션에서는 특정 도메인만 지정하는 것이 좋습니다.
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300, // 프리플라이트 캐시 시간(초)
+	})
+
+	handler := corsHandler.Handler(r)
+
 	// 서버 시작
 	log.Printf("Server starting on :8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", handler))
+}
+
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// 기본 CORS 헤더 설정
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, X-CSRF-Token")
+
+		// preflight OPTIONS 요청 처리
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func (s *BlockchainServer) handleRegister(w http.ResponseWriter, r *http.Request) {
