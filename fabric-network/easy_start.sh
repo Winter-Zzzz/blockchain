@@ -13,6 +13,8 @@ export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.e
 export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 export CORE_PEER_ADDRESS=localhost:7051
 
+(cd ../matter_tunnel/chaincode && export GO111MODULE=on go mod vendor)
+
 ./network.sh deployCC -ccn matter-tunnel -ccp ../matter_tunnel/chaincode/ -ccl go
 
 # pk 등록
