@@ -2,9 +2,9 @@
 
 ## Structure
 
-![블록체인의 구조를 나타낸 그림](https://private-user-images.githubusercontent.com/69969001/382725936-79efa5b2-8bba-4c90-8176-cbaf6f2a0697.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzIxNzUxNzQsIm5iZiI6MTczMjE3NDg3NCwicGF0aCI6Ii82OTk2OTAwMS8zODI3MjU5MzYtNzllZmE1YjItOGJiYS00YzkwLTgxNzYtY2JhZjZmMmEwNjk3LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDExMjElMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMTIxVDA3NDExNFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTFlMzk1Zjg2YjZmZjZmMTI5NzU3NWVkZjU3MmQzNWY2MDg1MTA1NjVkNDRiZjFjZmI0NTA4OTNlNmM0NmRlOGImWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.VtyX9W-OqRUsGkOKPRscWVvATcbQGo730Wjbl6dN5TY)
+![블록체인의 구조를 나타낸 그림](https://github.com/user-attachments/assets/581d2f4a-1f6f-4820-baf5-e8949f4c86c6)
 
-The system consists of 4 Orderer nodes, 2 Peer nodes, and 2 user nodes. The user nodes can be implemented either as middleware servers or end systems like dashboard.
+The system consists of 4 Orderer nodes, 2 Peer nodes, and 3 user nodes. User nodes can communicate with the blockchain through a gateway or directly using gRPC.
 
 ## Build Network
 
